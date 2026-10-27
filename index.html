@@ -1,0 +1,905 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Simulacros Gestor II DIAN</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: an exam booklet beside its optical answer sheet. Paper sheets on a cool desk; blue bubbles for juicio situacional, magenta for Likert, as on the CNSC sheet. */
+:root{
+  --desk:#eef0ee; --sheet:#ffffff; --ink:#14213d; --ink-2:#4b5672; --ink-3:#7a849b;
+  --rule:#d6dbe3; --rule-2:#e8ebf0;
+  --pjs:#1b5fb0; --pjs-soft:#e7eefa; --lik:#be185d; --lik-soft:#fbe8f0;
+  --ok:#1b7a4b; --ok-soft:#e2f3e9; --bad:#b3261e; --bad-soft:#fbe8e6; --warn:#8a5a00; --warn-soft:#fbf1d6;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --desk:#0e1320; --sheet:#161d2d; --ink:#e7eaf1; --ink-2:#a9b2c6; --ink-3:#7e889f;
+  --rule:#2b3550; --rule-2:#202a40;
+  --pjs:#75a7ef; --pjs-soft:#1a2a47; --lik:#f0679b; --lik-soft:#3b1a2a;
+  --ok:#5fcb92; --ok-soft:#133020; --bad:#f28b80; --bad-soft:#3b1d1a; --warn:#e2b44a; --warn-soft:#33290f;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --desk:#0e1320; --sheet:#161d2d; --ink:#e7eaf1; --ink-2:#a9b2c6; --ink-3:#7e889f;
+  --rule:#2b3550; --rule-2:#202a40;
+  --pjs:#75a7ef; --pjs-soft:#1a2a47; --lik:#f0679b; --lik-soft:#3b1a2a;
+  --ok:#5fcb92; --ok-soft:#133020; --bad:#f28b80; --bad-soft:#3b1d1a; --warn:#e2b44a; --warn-soft:#33290f;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--desk);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--pjs);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--ink);color:var(--sheet)}
+:root .top{--tf:var(--sheet)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;gap:0;min-width:0;margin-right:auto}
+.brand b{font-family:var(--f-display);font-size:17px;letter-spacing:.01em;color:var(--desk)}
+.brand span{font-family:var(--f-mono);font-size:11px;opacity:.75;color:var(--desk)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-size:13px;padding:3px 10px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.top .chip{color:var(--desk);opacity:.9}
+.navbtn{background:transparent;border:1px solid transparent;color:var(--desk);font-family:var(--f-display);font-weight:600;font-size:14px;padding:6px 10px;border-radius:var(--r)}
+.navbtn[aria-current="true"]{border-color:var(--desk)}
+
+/* generic */
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r)}
+.pad{padding:20px}
+.grid{display:grid;gap:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r);padding:9px 16px;font-family:var(--f-display);font-weight:600;font-size:15px;border:1px solid var(--ink);background:var(--ink);color:var(--sheet)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink-2)}
+.btn.pjs{background:var(--pjs);border-color:var(--pjs);color:var(--sheet)}
+.btn.lik{background:var(--lik);border-color:var(--lik);color:var(--sheet)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;font-family:var(--f-display);font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.pjs{background:var(--pjs-soft);color:var(--pjs)}
+.pill.lik{background:var(--lik-soft);color:var(--lik)}
+.pill.neutral{background:var(--rule-2);color:var(--ink-2)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{font-family:var(--f-display);font-size:13px;color:var(--ink-2);font-weight:600}
+.tablewrap{overflow-x:auto}
+.bar{height:8px;border-radius:4px;background:var(--rule-2);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;border-radius:4px}
+label.fld{display:flex;flex-direction:column;gap:4px;font-family:var(--f-display);font-size:13px;color:var(--ink-2);font-weight:600;min-width:0}
+.fld input,.fld select{font-family:var(--f-body);font-size:15px;color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:8px 10px;width:100%}
+
+/* home */
+.hero{padding-block:28px 8px;display:grid;gap:18px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:end}
+.hero h1{font-size:clamp(30px,4.4vw,46px);font-weight:700;letter-spacing:-.01em}
+.hero p{margin:8px 0 0;max-width:62ch}
+.countdown{border-left:3px solid var(--lik);padding:6px 0 6px 14px}
+.countdown b{font-family:var(--f-display);font-size:40px;line-height:1;display:block}
+.sims{display:grid;gap:14px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.simcard{display:flex;flex-direction:column;gap:10px;padding:16px;position:relative;overflow:hidden}
+.simcard .num{font-family:var(--f-display);font-size:56px;font-weight:700;line-height:.9;color:var(--rule)}
+.simcard h3{font-size:19px}
+.simcard .stat{font-family:var(--f-mono);font-size:13px;color:var(--ink-2)}
+.simcard .acts{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.simcard.s4{border-color:var(--lik);border-style:dashed}
+.sec{margin-top:28px}
+.sec>h2{font-size:22px;margin-bottom:12px}
+.two{display:grid;gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.weak{display:flex;flex-wrap:wrap;gap:6px}
+.heat{font-family:var(--f-display);font-size:13px;padding:4px 9px;border-radius:4px;border:1px solid var(--rule)}
+details.ficha summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:16px}
+details.ficha ol{margin:8px 0;padding-left:22px}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--ink-2);font-family:var(--f-mono);font-size:11px}
+
+/* exam */
+.exam{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;padding-block:18px 40px;align-items:start}
+.examhead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding-block:14px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--rule);background:var(--sheet);border-radius:var(--r);padding:6px 10px;font-family:var(--f-display);font-size:14px;font-weight:600;color:var(--ink-2)}
+.tab[aria-current="true"]{color:var(--sheet);background:var(--ink);border-color:var(--ink)}
+.tab small{font-family:var(--f-mono);font-weight:400;margin-left:4px}
+.timer{font-family:var(--f-mono);font-size:18px;font-weight:600}
+.qcard{padding:24px}
+.qmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.caso{background:var(--rule-2);border-radius:var(--r);padding:14px 16px;margin:0 0 14px}
+.caso .eyebrow{display:block;margin-bottom:4px}
+.enun{font-weight:600;margin:0 0 14px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--rule);background:var(--sheet);border-radius:var(--r);padding:12px 14px;width:100%}
+.opt:hover{border-color:var(--ink-3)}
+.opt[aria-pressed="true"]{border-color:var(--c);background:var(--cs)}
+.opt .txt{min-width:0}
+.bub{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--c);color:var(--c);font-family:var(--f-display);font-weight:700;font-size:13px;background:var(--sheet)}
+[aria-pressed="true"] .bub,.bub.on{background:var(--c);color:var(--sheet)}
+.pjsc{--c:var(--pjs);--cs:var(--pjs-soft)}
+.likc{--c:var(--lik);--cs:var(--lik-soft)}
+.afirm{font-size:19px;line-height:1.5;margin:0 0 18px}
+.qnav{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:18px}
+.flag[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.answersheet{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);padding:14px;max-height:calc(100vh - 96px);overflow:auto}
+.answersheet h3{font-size:15px;margin:6px 0 8px}
+.cells{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.cell{border:1px solid var(--rule);background:var(--sheet);border-radius:4px;padding:3px 0;font-family:var(--f-mono);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-2)}
+.cell i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--c);display:block}
+.cell.done i{background:var(--c)}
+.cell.cur{border-color:var(--ink);color:var(--ink)}
+.cell.flagged{box-shadow:inset 0 -3px 0 var(--warn)}
+.sheettoggle{display:none}
+
+/* results */
+.scorehead{display:grid;gap:16px;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr))}
+.big{font-family:var(--f-display);font-size:44px;font-weight:700;line-height:1}
+.kpi{padding:16px;display:flex;flex-direction:column;gap:6px}
+.review{display:flex;flex-direction:column;gap:12px}
+.ritem{padding:16px}
+.ritem .opt{cursor:default}
+.ritem .opt.key{border-color:var(--ok);background:var(--ok-soft)}
+.ritem .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.just{font-size:14.5px;margin-top:6px;color:var(--ink-2)}
+.just b{color:var(--ink)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:4px 12px;font-family:var(--f-display);font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 var(--r) var(--r) 0;font-size:15px}
+.note.info{border-color:var(--pjs);background:var(--pjs-soft)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgb(0 0 0 / .45);display:grid;place-items:center;z-index:50;padding:16px}
+.modal .sheet{max-width:460px;width:100%;padding:22px}
+.modal h3{font-size:20px;margin-bottom:8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--sheet);padding:9px 16px;border-radius:var(--r);font-family:var(--f-display);font-size:14px;z-index:60}
+.loading{padding:60px 0;text-align:center;color:var(--ink-2)}
+
+@media (max-width:980px){
+  .sims{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .exam{grid-template-columns:minmax(0,1fr)}
+  .answersheet{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:60vh;border-radius:12px 12px 0 0;z-index:20;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));box-shadow:0 -6px 24px rgb(0 0 0 / .18)}
+  .answersheet.closed{display:none}
+  .sheettoggle{display:inline-flex}
+  .cells{grid-template-columns:repeat(10,minmax(0,1fr))}
+  .scorehead{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .sims,.two{grid-template-columns:minmax(0,1fr)}
+  .qcard{padding:16px}
+  .cells{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .big{font-size:36px}
+}
+@media (prefers-reduced-motion:no-preference){.opt,.btn,.tab{transition:border-color .15s,background-color .15s}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>Simulacros DIAN 2676 · Gestor II</b><span>FT-TAH-1824 · Cód. 302 · Grado 02 · CT-CR-3007</span></div>
+    <span class="chip" id="storeChip">Cargando…</span>
+    <button class="navbtn" id="navHome" aria-current="true">Inicio</button>
+  </div>
+</header>
+<main class="wrap" id="app"><div class="loading">Cargando el banco de preguntas…</div></main>
+<div id="layer"></div>
+
+<script>
+(() => {
+"use strict";
+const LET = "ABC", LIKL = "ABCD";
+const LIK = ["Totalmente en desacuerdo","En desacuerdo","De acuerdo","Totalmente de acuerdo"];
+const BLOCKS = [
+  {k:"fb", name:"Competencias funcionales básicas", short:"Func. básicas", type:"pjs"},
+  {k:"f", name:"Competencias funcionales del empleo", short:"Func. del empleo", type:"pjs"},
+  {k:"comp", name:"Competencias comportamentales", short:"Comportamentales", type:"lik"},
+  {k:"int", name:"Prueba de integridad", short:"Integridad", type:"lik"}
+];
+const EXAM_DATE = new Date("2026-11-08T08:00:00-05:00");
+const SESSION_SECONDS = 5*3600;
+const NBC = ["Administración","Contaduría Pública","Derecho y afines","Economía","Ingeniería administrativa y afines","Ingeniería de sistemas, telemática y afines","Ingeniería industrial y afines"];
+const WEIGHTS = {
+  ingreso:{label:"Ingreso", f:65, comp:15, int:10, va:10},
+  ascenso:{label:"Ascenso", f:60, comp:15, int:10, va:15}
+};
+const LEVEL_REQ = {CE:4, AD:3, CO:3, TE:3};
+const LEVEL_TXT = {
+  CE:"Estructura, fomenta y aplica estrategias organizacionales sobre la base de valores institucionales y prácticas organizacionales, para sí mismo y para la organización.",
+  AD:"Se anticipa a los cambios en las diversas situaciones, contextos y medios, producto de la revisión de los objetivos bajo su responsabilidad, adecuando su propio accionar a los cambios necesarios.",
+  CO:"Selecciona los métodos más adecuados para lograr comunicaciones efectivas, mediante la consolidación de redes de contacto, considerando su impacto en los interlocutores.",
+  TE:"Fomenta el espíritu de colaboración, valorando positivamente los aportes de cada integrante y cuidando el buen clima laboral."
+};
+const VALUE_TXT = {
+  HO:"Actuar con fundamento en la verdad, con transparencia y rectitud, favoreciendo el interés general.",
+  RE:"Reconocer, valorar y tratar de manera digna a todas las personas, sin importar su condición.",
+  CM:"Ser consciente del propio rol como servidor público y estar dispuesto a comprender y resolver las necesidades de las personas.",
+  DI:"Cumplir los deberes con atención, prontitud, destreza y eficiencia, cuidando los recursos públicos.",
+  JU:"Actuar con imparcialidad, garantizando los derechos de las personas con equidad e igualdad."
+};
+const STUDY = {
+  T1:"Arts. 869 y 869-1 E.T. (abuso tributario); arts. 319, 320 y 434A del Código Penal; Ley 1762 de 2015; Ley 1712 de 2014, arts. 9, 18 y 19; art. 583 E.T. (reserva).",
+  T2:"Funciones de búsqueda (BUSCARV, BUSCARX), tablas dinámicas, validación de formatos y políticas de seguridad de la información.",
+  T3:"Ley 594 de 2000; Tablas de Retención Documental; principio de orden original; transferencias documentales; Acuerdo 060 de 2001 del AGN.",
+  T4:"Decreto 1499 de 2017 y Manual Operativo del MIPG: siete dimensiones, políticas y esquema de líneas de defensa.",
+  T5:"Código de Integridad del servicio público; arts. 11 y 12 CPACA (impedimentos); manejo de regalos, invitaciones y credenciales.",
+  T6:"Ley 1437 de 2011: arts. 3, 5, 7, 13 a 21 (sustituidos por la Ley 1755 de 2015), 69, 76, 83, 93 a 97; Decreto Ley 019 de 2012.",
+  T7:"Ley 1755 de 2015 (términos: 15, 10 y 30 días; peticiones entre autoridades); art. 81 de la Ley 962 de 2005; tipología de PQRSF.",
+  T8:"Art. 5 num. 6 y art. 7 CPACA; carta de trato digno; lenguaje claro; Ley 1618 de 2013 y Centro de Relevo; atención multicanal.",
+  T9:"Constitución: arts. 6, 13, 15, 23, 29, 83, 86, 87, 95-9, 209, 338 y 363; Decreto 2591 de 1991.",
+  T10:"E.T. arts. 579-2, 580, 580-1, 588, 589, 634, 635, 639, 804, 805 y 862; art. 43 de la Ley 962 de 2005.",
+  T11:"Decreto 624 de 1989 (E.T.) y DUR 1625 de 2016; régimen de aduanas (Decreto 1165 de 2019, Decreto 920 de 2023); régimen cambiario y Decreto Ley 2245 de 2011.",
+  T12:"Arts. 338 y 363 C.P.; elementos del tributo; impuestos directos e indirectos; tasas, contribuciones e impuestos; art. 26 E.T.",
+  F1:"E.T. arts. 817, 818, 823 a 836-1 (títulos ejecutivos, mandamiento de pago, excepciones, recursos, ejecución).",
+  F2:"E.T. arts. 794, 814, 814-3 y 818; segmentación de cartera y riesgo de prescripción.",
+  F3:"E.T. arts. 837, 837-1, 838, 839-1, 839-2 y 841; art. 155 CST; reglas del C.G.P. sobre embargos.",
+  F4:"Ley 1116 de 2006 (arts. 17, 20, 24 a 30, 46, 48 y 71); C.G.P. arts. 531 y ss.; E.T. arts. 844 a 847; art. 2495 C.C.",
+  F5:"E.T. arts. 583, 674, 675, 676, 676-1, 800, 801 y 805; convenios de recaudo.",
+  F6:"E.T. arts. 370, 437, 437-2, 555-2, 580-1, 615, 631, 643, 651, 657, 715 a 717; art. 402 del Código Penal; campañas basadas en riesgo.",
+  F7:"E.T. arts. 670, 815, 816, 850, 854, 855, 857, 857-1, 860, 861, 862 y 863; DUR 1625 de 2016 (retenciones en exceso)."
+};
+
+/* ---------- helpers ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const trunc2 = x => Math.floor(x*100)/100;
+const fmt = x => (x==null||isNaN(x)) ? "—" : trunc2(x).toFixed(2).replace(".", ",");
+const hms = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return `${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`; };
+const dt = t => t ? new Date(t).toLocaleString("es-CO",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}) : "";
+const rid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+function toast(msg){ const t = document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(), 2600); }
+function seededShuffle(arr, seed){ let s = seed>>>0 || 1; const a = arr.slice(); for(let i=a.length-1;i>0;i--){ s = (s*1664525+1013904223)>>>0; const j = s % (i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function hash(str){ let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+
+/* ---------- state ---------- */
+const S = { bank:null, byId:{}, names:null, store:null, docs:{}, view:"home", cur:null, sample:null, genAbort:null };
+
+/* ---------- storage: private per-viewer db, else this browser ---------- */
+async function initStore(){
+  let db=null, uid=null;
+  try{
+    if (window.claude && claude.use){
+      const [d,u] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if (d && u){ uid = await u.id(); if (uid) db = d; }
+    }
+  }catch(e){ db=null; }
+  const pending = {}, inflight = {};
+  if (db){
+    const col = db.collection("data/users/" + uid);
+    const raw = {
+      async list(){ const snap = await col.get(); const out={}; snap.docs.forEach(d=>{ if(d.exists) out[d.id]=JSON.parse(JSON.stringify(d.data())); }); return out; },
+      async put(id,data){ await col.doc(id).set(data); },
+      async del(id){ await col.doc(id).delete(); }
+    };
+    return wrapQueue("cuenta", raw);
+  }
+  const KEY = "dian2676-sim-v1";
+  const read = () => { try{ return JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){ return {}; } };
+  const write = o => { try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} };
+  return wrapQueue("navegador", {
+    async list(){ return read(); },
+    async put(id,data){ const o=read(); o[id]=data; write(o); },
+    async del(id){ const o=read(); delete o[id]; write(o); }
+  });
+  function wrapQueue(kind, raw){
+    async function flush(id){
+      if (inflight[id]) return;
+      inflight[id] = true;
+      try{
+        while (pending[id]){
+          const data = pending[id]; pending[id] = null;
+          try{ await raw.put(id, data); }
+          catch(e){
+            if (e && e.code === "unavailable"){ await new Promise(r=>setTimeout(r, 800+Math.random()*800)); pending[id] = pending[id] || data; continue; }
+            if (e && e.code === "quota_exceeded") toast("No hay espacio para guardar más intentos. Borra intentos antiguos en el historial.");
+            else toast("No se pudo guardar el último cambio.");
+          }
+        }
+      } finally { inflight[id] = false; }
+    }
+    return { kind, list: raw.list, save(id, data){ pending[id] = JSON.parse(JSON.stringify(data)); flush(id); }, async del(id){ delete pending[id]; await raw.del(id); } };
+  }
+}
+let saveTimer=null;
+function saveDoc(id){ S.store.save(id, S.docs[id]); }
+function saveSoon(id){ clearTimeout(saveTimer); saveTimer = setTimeout(()=>saveDoc(id), 1200); }
+
+/* ---------- items ---------- */
+function item(id){ return S.byId[id]; }
+function simItems(n){ const ord = {fb:0,f:1,comp:2,int:3}; return S.bank.items.filter(i=>i.sim===n).sort((a,b)=>ord[a.block]-ord[b.block] || a.id.localeCompare(b.id)).map(i=>i.id); }
+function attempts(){ return Object.entries(S.docs).filter(([k,v])=>v.kind==="attempt").map(([k,v])=>Object.assign({_id:k},v)).sort((a,b)=>a.startedAt-b.startedAt); }
+function latestFinished(sim){ return attempts().filter(a=>a.sim===sim && a.status==="finalizado").pop(); }
+function inProgress(sim){ return attempts().filter(a=>a.sim===sim && a.status==="en_curso").pop(); }
+function registerGen(list){ (list||[]).forEach(g=>{ S.byId[g.id]=g; }); }
+/* displayed option order for PJS: perm maps displayed position -> original index */
+function permOf(att, id){ return (att.perms && att.perms[id]) || [0,1,2]; }
+function keyIdx(it){ return LET.indexOf(it.key); }
+
+/* ---------- scoring ---------- */
+function likVal(it, r){ if (r==null) return null; return it.dir === "-" ? (4-r)/3 : (r-1)/3; }
+function score(att){
+  const res = {blocks:{}, byCode:{}, lik:{}, control:{sum:0,n:0}, answered:0, total:att.items.length, flags:(att.flags||[]).length};
+  BLOCKS.forEach(b=>res.blocks[b.k]={c:0,n:0,sum:0,m:0});
+  for (const id of att.items){
+    const it = item(id); if(!it) continue;
+    const r = att.answers[id]; if (r!=null) res.answered++;
+    const B = res.blocks[it.block];
+    if (it.block==="fb"||it.block==="f"){
+      B.n++; const ok = r===keyIdx(it); if (ok) B.c++;
+      const C = res.byCode[it.code] = res.byCode[it.code] || {c:0,n:0,block:it.block};
+      C.n++; if (ok) C.c++;
+    } else if (it.code==="CTL"){
+      if (r!=null){ res.control.sum += (r-1)/3; res.control.n++; }
+    } else {
+      const v = likVal(it, r);
+      const L = res.lik[it.code] = res.lik[it.code] || {sum:0,n:0,m:0,block:it.block};
+      L.m++; B.m++;
+      if (v!=null){ L.sum+=v; L.n++; B.sum+=v; B.n++; }
+    }
+  }
+  const fb=res.blocks.fb, f=res.blocks.f;
+  res.sFB = fb.n ? fb.c/fb.n*100 : null;
+  res.sF = f.n ? f.c/f.n*100 : null;
+  res.sFunc = (fb.n+f.n) ? (fb.c+f.c)/(fb.n+f.n)*100 : null;
+  res.sComp = res.blocks.comp.n ? res.blocks.comp.sum/res.blocks.comp.n*100 : null;
+  res.sInt = res.blocks.int.n ? res.blocks.int.sum/res.blocks.int.n*100 : null;
+  res.ctrl = res.control.n ? res.control.sum/res.control.n : null;
+  res.pass = res.sFunc!=null && trunc2(res.sFunc) >= 70;
+  const w = WEIGHTS[(S.docs.perfil && S.docs.perfil.modalidad) || "ingreso"];
+  res.weighted = (res.sFunc||0)*w.f/100 + (res.sComp||0)*w.comp/100 + (res.sInt||0)*w.int/100;
+  res.weightMax = w.f + w.comp + w.int;
+  return res;
+}
+const levelEst = s => s>=87.5?4:s>=62.5?3:s>=37.5?2:1;
+
+/* ---------- weakness profile (latest finished attempt of each simulacro) ---------- */
+function profile(){
+  const codeAgg = {}, likAgg = {}, wrong = new Set(), seen = new Set(), likLow = new Set(), used = [];
+  for (const sim of [1,2,3,4]){
+    const a = latestFinished(sim); if(!a) continue; used.push(a);
+    const r = score(a);
+    for (const [c,v] of Object.entries(r.byCode)){ const A = codeAgg[c]=codeAgg[c]||{c:0,n:0,block:v.block}; A.c+=v.c; A.n+=v.n; }
+    for (const [c,v] of Object.entries(r.lik)){ const A = likAgg[c]=likAgg[c]||{sum:0,n:0,block:v.block}; A.sum+=v.sum; A.n+=v.n; }
+    for (const id of a.items){ const it=item(id); if(!it) continue; seen.add(id); const ans=a.answers[id];
+      if ((it.block==="fb"||it.block==="f") && ans!==keyIdx(it)) wrong.add(id);
+      if ((it.block==="comp"||it.block==="int") && it.code!=="CTL"){ const v=likVal(it,ans); if(v==null||v<0.67) likLow.add(id); }
+    }
+  }
+  return {codeAgg, likAgg, wrong, seen, likLow, used};
+}
+function errRate(a){ return a && a.n ? 1 - a.c/a.n : null; }
+
+/* ---------- simulacro 4 builder ---------- */
+function allocate(total, entries){ /* entries: {code, w, cap, min} */
+  const out = {}; entries.forEach(e=>out[e.code]=Math.min(e.min||0, e.cap));
+  let left = total - Object.values(out).reduce((a,b)=>a+b,0);
+  for (let guard=0; left>0 && guard<20; guard++){
+    const open = entries.filter(e=>out[e.code]<e.cap); if(!open.length) break;
+    const W = open.reduce((s,e)=>s+e.w,0) || open.length;
+    const shares = open.map(e=>({e, x:left*(W? e.w/W : 1/open.length)}));
+    let given = 0;
+    shares.forEach(s=>{ const add = Math.min(Math.floor(s.x), s.e.cap-out[s.e.code]); out[s.e.code]+=add; given+=add; });
+    left -= given;
+    if (left>0 && given===0){ shares.sort((a,b)=>(b.x%1)-(a.x%1) || b.e.w-a.e.w); for (const s of shares){ if(left<=0) break; if(out[s.e.code]<s.e.cap){ out[s.e.code]++; left--; } } }
+  }
+  return out;
+}
+function buildS4(){
+  const P = profile();
+  const items = [], perms = {}, basis = {pjs:{}, lik:{}};
+  const pool = code => S.bank.items.filter(i=>i.code===code && i.sim<=3);
+  const prio = id => P.wrong.has(id) ? 0 : !P.seen.has(id) ? 1 : 2;
+  const pickPJS = (block, total) => {
+    const codes = Object.keys(S.names[block]);
+    const ent = codes.map(c=>{ const er = errRate(P.codeAgg[c]); const w = (er==null?0.5:er) + 0.05; basis.pjs[c]=er; return {code:c, w, cap:pool(c).length, min:1}; });
+    const cnt = allocate(total, ent);
+    for (const c of codes){
+      const list = pool(c).map(i=>i.id).sort((a,b)=>prio(a)-prio(b) || (hash(a+"s4")%97)-(hash(b+"s4")%97));
+      list.slice(0, cnt[c]).forEach(id=>items.push(id));
+    }
+  };
+  const pickLik = (block, total, codes, target, nCtl) => {
+    const ent = codes.map(c=>{ const A=P.likAgg[c]; const s = A&&A.n ? A.sum/A.n*100 : null; basis.lik[c]=s; const def = s==null?0.3:Math.max(0,(target(c)-s)/100); return {code:c, w:def+0.05, cap:pool(c).filter(i=>i.block===block).length, min:2}; });
+    const cnt = allocate(total-nCtl, ent);
+    const order = id => P.likLow.has(id)?0:!P.seen.has(id)?1:2;
+    for (const c of codes){ pool(c).filter(i=>i.block===block).map(i=>i.id).sort((a,b)=>order(a)-order(b)||(hash(a)%89)-(hash(b)%89)).slice(0,cnt[c]).forEach(id=>items.push(id)); }
+    pool("CTL").filter(i=>i.block===block).map(i=>i.id).sort((a,b)=>(hash(a)%53)-(hash(b)%53)).slice(0,nCtl).forEach(id=>items.push(id));
+  };
+  const before = () => items.length;
+  let s0 = before(); pickPJS("fb", 30); shuffleTail(items, s0, "fb");
+  s0 = before(); pickPJS("f", 30); shuffleTail(items, s0, "f");
+  s0 = before(); pickLik("comp", 30, ["CE","AD","CO","TE"], c=>LEVEL_REQ[c]===4?87.5:62.5, 4); shuffleTail(items, s0, "comp");
+  s0 = before(); pickLik("int", 30, ["HO","RE","CM","DI","JU"], ()=>75, 2); shuffleTail(items, s0, "int");
+  items.forEach(id=>{ const it=item(id); if(it.block==="fb"||it.block==="f") perms[id] = seededShuffle([0,1,2], hash(id+Date.now())); });
+  return {kind:"s4", createdAt:Date.now(), items, perms, gen:[], basis, wrongCount:P.wrong.size, basedOn:P.used.map(a=>a.sim)};
+}
+function shuffleTail(arr, from, salt){ const tail = seededShuffle(arr.slice(from), hash(salt+Date.now())); arr.splice(from, tail.length, ...tail); }
+
+/* ---------- attempts ---------- */
+function newAttempt(sim){
+  const id = "att-" + rid();
+  let base = {kind:"attempt", sim, status:"en_curso", startedAt:Date.now(), updatedAt:Date.now(), elapsed:0, idx:0, answers:{}, flags:[], items:[], perms:{}};
+  if (sim===4){ const c = S.docs.s4; base.items = c.items.slice(); base.perms = JSON.parse(JSON.stringify(c.perms)); base.gen = JSON.parse(JSON.stringify(c.gen||[])); }
+  else base.items = simItems(sim);
+  S.docs[id] = base; saveDoc(id); return id;
+}
+function openExam(id){
+  const a = S.docs[id]; registerGen(a.gen);
+  S.cur = {id, sessionStart:Date.now(), base:a.elapsed||0, sheetOpen:false};
+  S.view = "exam"; render();
+}
+function elapsedNow(){ const c=S.cur; return c ? c.base + (Date.now()-c.sessionStart)/1000 : 0; }
+function persistElapsed(){ const c=S.cur; if(!c) return; const a=S.docs[c.id]; if(!a) return; a.elapsed = Math.round(elapsedNow()); c.base = a.elapsed; c.sessionStart = Date.now(); a.updatedAt = Date.now(); }
+function finishAttempt(id, reason){
+  const a = S.docs[id]; if(!a) return;
+  if (S.cur && S.cur.id===id) persistElapsed();
+  a.status = "finalizado"; a.finishedAt = Date.now(); a.endReason = reason||"manual";
+  const r = score(a);
+  a.summary = {sFunc:r.sFunc, sFB:r.sFB, sF:r.sF, sComp:r.sComp, sInt:r.sInt, pass:r.pass, answered:r.answered};
+  saveDoc(id);
+  S.cur = null; S.view = "results"; S.resId = id; S.resFilter = "wrong"; render(); window.scrollTo(0,0);
+}
+
+/* ---------- modal ---------- */
+function modal(html, wire){
+  const L = $("#layer"); L.innerHTML = `<div class="modal" role="dialog" aria-modal="true"><div class="sheet">${html}</div></div>`;
+  const close = () => { L.innerHTML = ""; };
+  L.querySelector(".modal").addEventListener("click", e=>{ if(e.target.classList.contains("modal")) close(); });
+  wire(L, close);
+  const f = L.querySelector("button"); if (f) f.focus();
+}
+
+/* ---------- render: home ---------- */
+function daysLeft(){ const d = Math.ceil((EXAM_DATE - new Date())/86400000); return d; }
+function renderHome(){
+  const pf = S.docs.perfil || {};
+  const dl = daysLeft();
+  const cards = [1,2,3].map(n=>simCard(n)).join("") + s4Card();
+  const P = profile();
+  return `
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Proceso de Selección DIAN 2676 · Nivel profesional</div>
+      <h1>Gestor II: simulacros con retroalimentación</h1>
+      <p class="muted">Proceso misional de cumplimiento de obligaciones tributarias, subproceso de administración de cartera, recaudo y devoluciones. Tres simulacros completos con el formato de la guía de la CNSC y un cuarto que se arma con tus debilidades.</p>
+    </div>
+    <div class="countdown">${dl>0?`<b class="mono">${dl}</b><span class="muted">días para la prueba escrita del 8 de noviembre de 2026, 8:00 a. m. (5 horas)</span>`:`<b>Hoy</b><span class="muted">es la fecha de la prueba escrita o ya pasó.</span>`}</div>
+  </section>
+
+  <section class="sec">
+    <h2>Simulacros</h2>
+    <div class="sims">${cards}</div>
+  </section>
+
+  <section class="sec two">
+    <div class="sheet pad chart">
+      <h2 style="font-size:20px">Evolución por prueba</h2>
+      <p class="small muted" style="margin:4px 0 10px">Último intento finalizado de cada simulacro. La línea punteada marca el mínimo aprobatorio de 70,00 en competencias funcionales.</p>
+      ${evolutionChart()}
+    </div>
+    <div class="sheet pad">
+      <h2 style="font-size:20px">Mapa de debilidades</h2>
+      <p class="small muted" style="margin:4px 0 10px">Porcentaje de error por competencia funcional, acumulado en tus últimos intentos. El simulacro 4 asigna más preguntas a lo que está en rojo.</p>
+      ${weakMap(P)}
+    </div>
+  </section>
+
+  <section class="sec two">
+    <div class="sheet pad">
+      <h2 style="font-size:20px">Tus datos de aspirante</h2>
+      <p class="small muted" style="margin:4px 0 12px">Se usan para calcular la ponderación y verificar el requisito de estudios. No se pide el número de documento.</p>
+      <form id="perfilForm" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        <label class="fld">Nombre<input id="pfNombre" value="${esc(pf.nombre||"")}" autocomplete="name" placeholder="Tu nombre"></label>
+        <label class="fld">Modalidad<select id="pfModalidad"><option value="ingreso" ${pf.modalidad!=="ascenso"?"selected":""}>Ingreso</option><option value="ascenso" ${pf.modalidad==="ascenso"?"selected":""}>Ascenso</option></select></label>
+        <label class="fld">Núcleo básico del conocimiento<select id="pfNbc"><option value="">Selecciona tu NBC</option>${NBC.map(n=>`<option ${pf.nbc===n?"selected":""}>${esc(n)}</option>`).join("")}<option value="otro" ${pf.nbc==="otro"?"selected":""}>Otro NBC</option></select></label>
+        <label class="fld">Ciudad de presentación<input id="pfCiudad" value="${esc(pf.ciudad||"")}" placeholder="Ej.: Girardot"></label>
+        <label class="fld" style="flex-direction:row;align-items:center;gap:8px;grid-column:1/-1"><input type="checkbox" id="pfExp" ${pf.exp?"checked":""} style="width:auto"> Tengo al menos un año de experiencia profesional y tarjeta profesional cuando la ley la exige</label>
+        <div class="row" style="grid-column:1/-1"><button class="btn" type="submit">Guardar datos</button><span class="small">${eligibility(pf)}</span></div>
+      </form>
+    </div>
+    <div class="sheet pad">
+      <h2 style="font-size:20px">Cómo se califica</h2>
+      ${weightsTable(pf.modalidad||"ingreso")}
+      <p class="small muted" style="margin:10px 0 0">Escala de 0 a 100 con dos decimales truncados. Funcionales es eliminatoria (70,00). Comportamentales e integridad son clasificatorias y en este simulador se estiman a partir de tu disposición declarada; la valoración de antecedentes no se simula.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Historial de intentos</h2>
+    ${historyTable()}
+  </section>
+
+  <section class="sec sheet pad">
+    <details class="ficha">
+      <summary>Ficha del empleo y pruebas evaluadas</summary>
+      <div class="two" style="margin-top:12px">
+        <div>
+          <div class="eyebrow">Propósito principal</div>
+          <p>Desarrollar acciones inherentes al proceso de Cumplimiento de Obligaciones Tributarias, de acuerdo con la normativa vigente, las políticas gubernamentales e institucionales y las directrices de Nivel Central.</p>
+          <div class="eyebrow">Requisitos</div>
+          <p>Título profesional en alguno de los NBC: ${NBC.map(esc).join("; ")}. Un año de experiencia profesional. Tarjeta profesional en los casos señalados por la ley.</p>
+        </div>
+        <div>
+          <div class="eyebrow">Qué evalúa cada simulacro</div>
+          <ol class="small">
+            <li><b>Funcionales básicas (30, juicio situacional):</b> ${Object.values(S.names.fb).map(esc).join("; ")}.</li>
+            <li><b>Funcionales del empleo (30, juicio situacional):</b> ${Object.values(S.names.f).map(esc).join("; ")}.</li>
+            <li><b>Comportamentales (30, Likert):</b> Comportamiento ético nivel 4; Adaptabilidad, Comunicación efectiva y Trabajo en equipo nivel 3; más una subescala de control.</li>
+            <li><b>Integridad (30, Likert):</b> valores del Código de Integridad: honestidad, respeto, compromiso, diligencia y justicia; más una subescala de control.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="small muted">Las preguntas se construyeron con normas vigentes a junio de 2026, como exige la guía (normas expedidas hasta el 19 de junio de 2026). Verifica cualquier cifra o artículo contra la fuente oficial antes de la prueba.</p>
+    </details>
+  </section>
+  <div style="height:40px"></div>`;
+}
+function eligibility(pf){
+  if (!pf.nbc) return `<span class="muted">Selecciona tu NBC para verificar el requisito.</span>`;
+  if (pf.nbc==="otro") return `<span class="pill bad">Tu NBC no está entre los que habilitan para este empleo</span>`;
+  return pf.exp ? `<span class="pill ok">Cumples estudios y experiencia</span>` : `<span class="pill warn">NBC válido; falta confirmar la experiencia</span>`;
+}
+function weightsTable(mod){
+  const w = WEIGHTS[mod];
+  return `<div class="tablewrap"><table><thead><tr><th>Prueba (${esc(w.label)}, con experiencia)</th><th>Carácter</th><th class="mono">Peso</th></tr></thead><tbody>
+  <tr><td>Competencias funcionales</td><td>Eliminatoria · 70,00</td><td class="mono">${w.f} %</td></tr>
+  <tr><td>Competencias comportamentales</td><td>Clasificatoria</td><td class="mono">${w.comp} %</td></tr>
+  <tr><td>Integridad</td><td>Clasificatoria</td><td class="mono">${w.int} %</td></tr>
+  <tr><td>Valoración de antecedentes</td><td>Clasificatoria · no se simula</td><td class="mono">${w.va} %</td></tr></tbody></table></div>`;
+}
+function simCard(n){
+  const run = inProgress(n), fin = latestFinished(n);
+  let stat = `<span class="stat">120 ítems · 4 pruebas · 5 h</span>`, acts="";
+  if (run){
+    const ans = Object.keys(run.answers).length;
+    stat = `<span class="pill warn">En curso</span><span class="stat">${ans}/120 respondidas · ${hms(run.elapsed)} usados</span>`;
+    acts = `<button class="btn" data-act="cont" data-id="${run._id}">Continuar</button>`;
+  } else {
+    acts = `<button class="btn ${fin?"ghost":""}" data-act="start" data-sim="${n}">${fin?"Repetir":"Iniciar"}</button>`;
+  }
+  if (fin){
+    const s = fin.summary || score(fin);
+    stat += `<div class="row" style="gap:6px"><span class="pill ${s.pass?"ok":"bad"}">Funcionales ${fmt(s.sFunc)}</span><span class="pill lik">Comp. ${fmt(s.sComp)}</span><span class="pill neutral">Int. ${fmt(s.sInt)}</span></div>`;
+    acts += `<button class="btn ghost" data-act="res" data-id="${fin._id}">Retroalimentación</button>`;
+  }
+  return `<article class="sheet simcard"><span class="num mono">0${n}</span><h3>Simulacro ${n}</h3>${stat}<div class="acts">${acts}</div></article>`;
+}
+function s4Card(){
+  const done = [1,2,3].filter(n=>latestFinished(n)).length;
+  const cfg = S.docs.s4, run = inProgress(4), fin = latestFinished(4);
+  let body;
+  if (!done){
+    body = `<span class="stat">Se habilita al finalizar al menos un simulacro. Recomendado: los tres.</span><div class="acts"><button class="btn" disabled>Generar simulacro 4</button></div>`;
+  } else if (!cfg){
+    body = `<span class="stat">${done} de 3 simulacros finalizados. Se armará con tus preguntas falladas y las competencias con más error.</span><div class="acts"><button class="btn lik" data-act="gen4">Generar simulacro 4</button></div>`;
+  } else {
+    const gen = (cfg.gen||[]).length;
+    let stat = `<span class="stat">Generado ${dt(cfg.createdAt)} · con base en S${(cfg.basedOn||[]).join(", S")} · ${cfg.wrongCount} preguntas falladas a repasar${gen?` · ${gen} casos inéditos`:""}</span>`;
+    let acts = run ? `<button class="btn" data-act="cont" data-id="${run._id}">Continuar</button>` : `<button class="btn lik" data-act="start" data-sim="4">${fin?"Repetir":"Iniciar"}</button>`;
+    if (fin){ const s = fin.summary||score(fin); stat += `<div class="row" style="gap:6px"><span class="pill ${s.pass?"ok":"bad"}">Funcionales ${fmt(s.sFunc)}</span><span class="pill lik">Comp. ${fmt(s.sComp)}</span><span class="pill neutral">Int. ${fmt(s.sInt)}</span></div>`; acts += `<button class="btn ghost" data-act="res" data-id="${fin._id}">Retroalimentación</button>`; }
+    if (!run){ acts += `<button class="btn ghost" data-act="gen4">Regenerar</button>`; if (S.sample) acts += `<button class="btn ghost" data-act="claude4">Añadir casos inéditos con Claude</button>`; }
+    body = stat + `<div class="acts">${acts}</div>`;
+  }
+  return `<article class="sheet simcard s4"><span class="num mono">04</span><h3>Simulacro 4 · adaptativo</h3>${body}</article>`;
+}
+function evolutionChart(){
+  const rows = [1,2,3,4].map(n=>({n, a:latestFinished(n)})).filter(r=>r.a);
+  if (!rows.length) return `<p class="muted small">Aún no hay intentos finalizados. Aquí verás tus puntajes por simulacro.</p>`;
+  const W=520, H=230, L=34, B=28, T=10, R=8, ih=H-T-B, iw=W-L-R;
+  const y = v => T + ih - (v/100)*ih;
+  const gw = iw/4, bw = Math.min(26, (gw-18)/3);
+  const series = [["sFunc","var(--pjs)","Funcionales"],["sComp","var(--lik)","Comportamentales"],["sInt","var(--ink-3)","Integridad"]];
+  let g = "";
+  [0,25,50,75,100].forEach(v=>{ g += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule-2)"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`; });
+  g += `<line x1="${L}" x2="${W-R}" y1="${y(70)}" y2="${y(70)}" stroke="var(--ok)" stroke-dasharray="4 4"/><text x="${W-R}" y="${y(70)-5}" text-anchor="end" style="fill:var(--ok)">70</text>`;
+  [1,2,3,4].forEach((n,i)=>{
+    const r = rows.find(x=>x.n===n); const x0 = L + i*gw + (gw - 3*bw - 8)/2;
+    g += `<text x="${L+i*gw+gw/2}" y="${H-8}" text-anchor="middle">S${n}</text>`;
+    if (!r) return;
+    const s = r.a.summary || score(r.a);
+    series.forEach(([k,c],j)=>{ const v = s[k]||0; g += `<rect x="${x0+j*(bw+4)}" y="${y(v)}" width="${bw}" height="${Math.max(0,y(0)-y(v))}" rx="2" fill="${c}"><title>${series[j][2]} S${n}: ${fmt(v)}</title></rect>`; });
+    g += `<text x="${x0+bw/2}" y="${y(s.sFunc||0)-4}" text-anchor="middle" style="fill:var(--ink);font-weight:600">${Math.floor(s.sFunc||0)}</text>`;
+  });
+  const legend = series.map(([k,c,l])=>`<span class="row" style="gap:6px"><i style="width:10px;height:10px;border-radius:2px;background:${c};display:inline-block"></i>${l}</span>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Puntajes por simulacro">${g}</svg><div class="row small muted" style="gap:14px;margin-top:6px">${legend}</div>`;
+}
+function weakMap(P){
+  const codes = [...Object.keys(S.names.fb), ...Object.keys(S.names.f)];
+  if (!P.used.length) return `<p class="muted small">Se llenará cuando finalices tu primer simulacro.</p>`;
+  const rows = codes.map(c=>({c, er:errRate(P.codeAgg[c]), n:(P.codeAgg[c]||{}).n||0})).filter(r=>r.er!=null).sort((a,b)=>b.er-a.er);
+  return `<div class="tablewrap"><table><thead><tr><th>Competencia</th><th class="mono">Error</th><th style="width:35%">&nbsp;</th></tr></thead><tbody>${rows.map(r=>{
+    const pct = r.er*100; const col = pct>=50?"var(--bad)":pct>=30?"var(--warn)":"var(--ok)";
+    return `<tr><td>${esc(compName(r.c))}<div class="small muted">${r.n} preguntas respondidas</div></td><td class="mono">${Math.round(pct)} %</td><td><div class="bar"><i style="width:${pct}%;background:${col}"></i></div></td></tr>`; }).join("")}</tbody></table></div>`;
+}
+function compName(c){ return S.names.fb[c] || S.names.f[c] || S.names.lk[c] || c; }
+function historyTable(){
+  const list = attempts().slice().reverse();
+  if (!list.length) return `<div class="sheet pad muted">Todavía no has presentado ningún simulacro. Tus intentos, respuestas y tiempos quedan guardados aquí.</div>`;
+  return `<div class="sheet tablewrap"><table><thead><tr><th>Simulacro</th><th>Inicio</th><th>Estado</th><th class="mono">Funcionales</th><th class="mono">Comp.</th><th class="mono">Int.</th><th class="mono">Tiempo</th><th></th></tr></thead><tbody>${list.map(a=>{
+    const s = a.status==="finalizado" ? (a.summary||score(a)) : null;
+    return `<tr><td>S${a.sim}</td><td class="small">${dt(a.startedAt)}</td><td>${a.status==="finalizado"?`<span class="pill ${s.pass?"ok":"bad"}">${s.pass?"Aprueba":"No aprueba"}</span>`:`<span class="pill warn">En curso</span>`}</td>
+    <td class="mono">${s?fmt(s.sFunc):"—"}</td><td class="mono">${s?fmt(s.sComp):"—"}</td><td class="mono">${s?fmt(s.sInt):"—"}</td><td class="mono">${hms(a.elapsed||0)}</td>
+    <td><div class="row" style="gap:6px;flex-wrap:nowrap">${a.status==="finalizado"?`<button class="btn ghost" data-act="res" data-id="${a._id}" style="padding:5px 10px">Ver</button>`:`<button class="btn ghost" data-act="cont" data-id="${a._id}" style="padding:5px 10px">Continuar</button>`}<button class="btn danger" data-act="del" data-id="${a._id}" style="padding:5px 10px" aria-label="Borrar intento">Borrar</button></div></td></tr>`; }).join("")}</tbody></table></div>`;
+}
+
+/* ---------- render: exam ---------- */
+function blockRange(a){ const r={}; a.items.forEach((id,i)=>{ const b=item(id).block; (r[b]=r[b]||[]).push(i); }); return r; }
+function renderExam(){
+  const c = S.cur, a = S.docs[c.id]; const idx = a.idx||0; const id = a.items[idx]; const it = item(id);
+  const ranges = blockRange(a);
+  const isP = it.block==="fb"||it.block==="f";
+  const cls = isP?"pjsc":"likc";
+  const r = a.answers[id];
+  const flagged = (a.flags||[]).includes(id);
+  const tabs = BLOCKS.map(b=>{ const rg = ranges[b.k]||[]; if(!rg.length) return ""; const done = rg.filter(i=>a.answers[a.items[i]]!=null).length; return `<button class="tab" data-act="jump" data-i="${rg[0]}" aria-current="${it.block===b.k}">${b.short}<small>${done}/${rg.length}</small></button>`; }).join("");
+  let body;
+  if (isP){
+    const perm = permOf(a, id);
+    body = `<div class="caso"><span class="eyebrow">Caso</span>${esc(it.caso)}</div>
+    <p class="enun"><span class="eyebrow" style="display:block">Enunciado</span>${esc(it.enun)}</p>
+    <div class="opts" role="group" aria-label="Opciones de respuesta">${perm.map((o,pos)=>`<button class="opt ${cls}" data-act="ans" data-v="${o}" aria-pressed="${r===o}"><span class="bub">${LET[pos]}</span><span class="txt">${esc(it.opts[o])}</span></button>`).join("")}</div>`;
+  } else {
+    body = `<p class="eyebrow" style="margin:0 0 4px">Afirmación</p><p class="afirm">${esc(it.text)}</p>
+    <div class="opts" role="group" aria-label="Escala de acuerdo">${LIK.map((l,k)=>`<button class="opt ${cls}" data-act="ans" data-v="${k+1}" aria-pressed="${r===k+1}"><span class="bub">${LIKL[k]}</span><span class="txt">${l}</span></button>`).join("")}</div>`;
+  }
+  const meta = isP ? `<span class="pill pjs">Juicio situacional</span><span class="pill neutral">${esc(it.comp)}</span>${it.gen?`<span class="pill warn">Caso inédito generado por Claude</span>`:""}`
+                   : `<span class="pill lik">Autoinforme Likert</span><span class="pill neutral">${it.block==="int"?"Integridad":"Comportamental"}</span>`;
+  const answered = Object.keys(a.answers).length;
+  const cells = BLOCKS.map(b=>{ const rg = ranges[b.k]||[]; if(!rg.length) return ""; const cc = b.type==="pjs"?"pjsc":"likc"; return `<h3>${b.name}</h3><div class="cells">${rg.map(i=>{ const iid=a.items[i]; return `<button class="cell ${cc} ${a.answers[iid]!=null?"done":""} ${i===idx?"cur":""} ${(a.flags||[]).includes(iid)?"flagged":""}" data-act="jump" data-i="${i}" aria-label="Pregunta ${i+1}">${i+1}<i></i></button>`; }).join("")}</div>`; }).join("");
+  return `
+  <div class="examhead">
+    <div class="tabs">${tabs}</div>
+    <div class="row"><span class="timer" id="timer" aria-live="off">${hms(SESSION_SECONDS - elapsedNow())}</span><button class="btn ghost sheettoggle" data-act="sheet">Hoja · ${answered}/${a.items.length}</button><button class="btn ghost" data-act="pause">Guardar y salir</button><button class="btn" data-act="finish">Finalizar</button></div>
+  </div>
+  <div class="exam">
+    <article class="sheet qcard">
+      <div class="qmeta"><span class="mono" style="font-weight:600">Pregunta ${idx+1} de ${a.items.length}</span>${meta}</div>
+      ${body}
+      <div class="qnav">
+        <button class="btn ghost" data-act="prev" ${idx===0?"disabled":""}>Anterior</button>
+        <button class="btn ghost flag" data-act="flag" aria-pressed="${flagged}">${flagged?"Marcada como dudosa":"Marcar como dudosa"}</button>
+        <button class="btn" data-act="next">${idx===a.items.length-1?"Revisar y finalizar":"Siguiente"}</button>
+      </div>
+    </article>
+    <aside class="sheet answersheet ${c.sheetOpen?"":"closed"}" aria-label="Hoja de respuestas">
+      <div class="row" style="justify-content:space-between"><span class="eyebrow">Hoja de respuestas · S${a.sim}</span><span class="mono small">${answered}/${a.items.length}</span></div>
+      ${cells}
+      <p class="small muted" style="margin:10px 0 0">El subrayado amarillo indica preguntas marcadas como dudosas, como en el formato de ítems dudosos de la guía.</p>
+    </aside>
+  </div>`;
+}
+
+/* ---------- render: results ---------- */
+function renderResults(){
+  const a = S.docs[S.resId]; registerGen(a.gen);
+  const r = score(a); const w = WEIGHTS[(S.docs.perfil&&S.docs.perfil.modalidad)||"ingreso"];
+  const codesFB = Object.entries(r.byCode).filter(([c,v])=>v.block==="fb");
+  const codesF = Object.entries(r.byCode).filter(([c,v])=>v.block==="f");
+  const compRow = ([c,v]) => { const pct=v.c/v.n*100; const col=pct>=70?"var(--ok)":pct>=50?"var(--warn)":"var(--bad)"; return `<tr><td>${esc(compName(c))}</td><td class="mono">${v.c}/${v.n}</td><td class="mono">${fmt(pct)}</td><td style="width:30%"><div class="bar"><i style="width:${pct}%;background:${col}"></i></div></td></tr>`; };
+  const weakest = Object.entries(r.byCode).map(([c,v])=>({c, pct:v.c/v.n*100, n:v.n})).filter(x=>x.pct<70).sort((x,y)=>x.pct-y.pct).slice(0,5);
+  const likRows = (block) => Object.entries(r.lik).filter(([c,v])=>v.block===block).map(([c,v])=>{
+    const s = v.n? v.sum/v.n*100 : 0; const req = LEVEL_REQ[c]; const est = levelEst(s);
+    const ok = req ? est>=req : s>=75;
+    return `<tr><td>${esc(compName(c))}${req?`<div class="small muted">Nivel requerido ${req}: ${esc(LEVEL_TXT[c])}</div>`:`<div class="small muted">${esc(VALUE_TXT[c]||"")}</div>`}</td><td class="mono">${fmt(s)}</td><td>${req?`<span class="pill ${ok?"ok":"warn"}">Estimado ${est} / requerido ${req}</span>`:`<span class="pill ${ok?"ok":"warn"}">${ok?"Consistente":"Por fortalecer"}</span>`}</td></tr>`; }).join("");
+  const ctrlWarn = r.ctrl!=null && r.ctrl>=0.67;
+  const filt = S.resFilter || "wrong";
+  const list = a.items.map((id,i)=>({id,i,it:item(id)})).filter(x=>x.it).filter(x=>{
+    const isP = x.it.block==="fb"||x.it.block==="f"; const ans=a.answers[x.id];
+    if (filt==="wrong") return isP && ans!==keyIdx(x.it);
+    if (filt==="flag") return (a.flags||[]).includes(x.id);
+    if (filt==="lik") return !isP && x.it.code!=="CTL" && (likVal(x.it,ans)??0) < 0.67;
+    if (filt==="pjs") return isP;
+    return true;
+  });
+  const shown = list.slice(0, S.resLimit||25);
+  return `
+  <section class="hero" style="grid-template-columns:minmax(0,1fr)">
+    <div class="row" style="justify-content:space-between">
+      <div><div class="eyebrow">Retroalimentación · ${dt(a.finishedAt)} · ${hms(a.elapsed||0)} de 5:00:00${a.endReason==="tiempo"?" · tiempo agotado":""}</div><h1>Simulacro ${a.sim}${a.sim===4?" adaptativo":""}</h1></div>
+      <div class="row"><button class="btn ghost" data-act="home">Volver al inicio</button>${a.sim<4?`<button class="btn ghost" data-act="start" data-sim="${a.sim}">Repetir</button>`:""}</div>
+    </div>
+  </section>
+  <section class="scorehead">
+    <div class="sheet kpi"><span class="eyebrow">Competencias funcionales · eliminatoria</span><span class="big mono">${fmt(r.sFunc)}</span><span><span class="pill ${r.pass?"ok":"bad"}">${r.pass?"Supera el mínimo de 70,00":"No supera el mínimo de 70,00"}</span></span><span class="small muted">Básicas ${fmt(r.sFB)} · Del empleo ${fmt(r.sF)} · ${r.blocks.fb.c+r.blocks.f.c} de ${r.blocks.fb.n+r.blocks.f.n} correctas</span></div>
+    <div class="sheet kpi"><span class="eyebrow">Comportamentales</span><span class="big mono" style="color:var(--lik)">${fmt(r.sComp)}</span><span class="small muted">Índice de disposición, clasificatoria (${w.comp} %)</span></div>
+    <div class="sheet kpi"><span class="eyebrow">Integridad</span><span class="big mono">${fmt(r.sInt)}</span><span class="small muted">Clasificatoria (${w.int} %)</span></div>
+    <div class="sheet kpi"><span class="eyebrow">Ponderado parcial · ${esc(w.label)}</span><span class="big mono">${fmt(r.weighted)}</span><span class="small muted">de ${r.weightMax} posibles; faltan los ${w.va} puntos de antecedentes</span></div>
+  </section>
+  ${ctrlWarn?`<p class="note" style="margin-top:16px">Tus respuestas a las afirmaciones de control fueron muy favorables (por ejemplo, aceptar que nunca has cometido un error). La guía advierte que la prueba incluye subescalas de control para detectar respuestas exageradamente favorables y que pueden afectar qué ítems se califican. Responde según tu conducta habitual.</p>`:""}
+  ${!r.pass?`<p class="note info" style="margin-top:16px">En la prueba real, si no se alcanza 70,00 en funcionales, no se publican los resultados de comportamentales y el aspirante no continúa. Concéntrate primero en las competencias de la tabla con menor porcentaje.</p>`:""}
+
+  <section class="sec two">
+    <div class="sheet pad"><h2 style="font-size:19px;margin-bottom:8px">Funcionales básicas</h2><div class="tablewrap"><table><thead><tr><th>Competencia</th><th class="mono">Aciertos</th><th class="mono">%</th><th></th></tr></thead><tbody>${codesFB.map(compRow).join("")}</tbody></table></div></div>
+    <div class="sheet pad"><h2 style="font-size:19px;margin-bottom:8px">Funcionales del empleo</h2><div class="tablewrap"><table><thead><tr><th>Competencia</th><th class="mono">Aciertos</th><th class="mono">%</th><th></th></tr></thead><tbody>${codesF.map(compRow).join("")}</tbody></table></div></div>
+  </section>
+
+  <section class="sec sheet pad">
+    <h2 style="font-size:19px;margin-bottom:8px">Plan de estudio para tus debilidades</h2>
+    ${weakest.length ? `<div class="tablewrap"><table><thead><tr><th>Competencia</th><th class="mono">%</th><th>Qué repasar</th></tr></thead><tbody>${weakest.map(x=>`<tr><td>${esc(compName(x.c))}</td><td class="mono">${fmt(x.pct)}</td><td class="small">${esc(STUDY[x.c]||"")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Superaste el 70 % en todas las competencias funcionales de este intento.</p>`}
+  </section>
+
+  <section class="sec two">
+    <div class="sheet pad"><h2 style="font-size:19px;margin-bottom:8px">Comportamentales frente al nivel requerido</h2><div class="tablewrap"><table><thead><tr><th>Competencia</th><th class="mono">Índice</th><th>Nivel</th></tr></thead><tbody>${likRows("comp")}</tbody></table></div><p class="small muted" style="margin:8px 0 0">El nivel estimado es orientativo: la prueba real no tiene respuestas correctas o incorrectas y se califica con análisis psicométrico.</p></div>
+    <div class="sheet pad"><h2 style="font-size:19px;margin-bottom:8px">Integridad por valor</h2><div class="tablewrap"><table><thead><tr><th>Valor</th><th class="mono">Índice</th><th>Lectura</th></tr></thead><tbody>${likRows("int")}</tbody></table></div></div>
+  </section>
+
+  <section class="sec">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="font-size:22px">Revisión pregunta por pregunta</h2>
+      <div class="filters" role="group" aria-label="Filtrar">${[["wrong","Funcionales falladas"],["flag","Dudosas"],["lik","Afirmaciones por revisar"],["pjs","Todas las funcionales"],["all","Todas"]].map(([k,l])=>`<button data-act="filt" data-f="${k}" aria-pressed="${filt===k}">${l}</button>`).join("")}</div></div>
+    <div class="review">${shown.length? shown.map(x=>reviewItem(a,x)).join("") : `<div class="sheet pad muted">No hay preguntas en este filtro.</div>`}</div>
+    ${list.length>shown.length?`<div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" data-act="more">Mostrar ${Math.min(25,list.length-shown.length)} más (quedan ${list.length-shown.length})</button></div>`:""}
+  </section>
+  <div style="height:40px"></div>`;
+}
+function reviewItem(a, x){
+  const it = x.it, ans = a.answers[x.id];
+  if (it.block==="fb"||it.block==="f"){
+    const perm = permOf(a, x.id), k = keyIdx(it);
+    const ok = ans===k;
+    return `<article class="sheet ritem">
+      <div class="qmeta"><span class="mono" style="font-weight:600">${x.i+1}</span><span class="pill ${ok?"ok":ans==null?"neutral":"bad"}">${ok?"Correcta":ans==null?"Sin responder":"Incorrecta"}</span><span class="pill neutral">${esc(it.comp)}</span>${(a.flags||[]).includes(x.id)?`<span class="pill warn">Dudosa</span>`:""}${it.gen?`<span class="pill warn">Generada por Claude</span>`:""}</div>
+      <div class="caso"><span class="eyebrow">Caso</span>${esc(it.caso)}</div><p class="enun">${esc(it.enun)}</p>
+      <div class="opts">${perm.map((o,pos)=>`<div class="opt pjsc ${o===k?"key":""} ${o===ans&&o!==k?"wrong":""}"><span class="bub ${o===ans?"on":""}">${LET[pos]}</span><span class="txt">${esc(it.opts[o])}<div class="just"><b>${o===k?"Es correcta.":"Es incorrecta."}</b> ${esc(it.just[o])}</div></span></div>`).join("")}</div>
+    </article>`;
+  }
+  const v = likVal(it, ans);
+  const expected = it.code==="CTL" ? "Afirmación de control: describe una conducta casi imposible. Estar totalmente de acuerdo sugiere respuestas exageradamente favorables."
+     : it.dir==="-" ? "Describe una conducta contraria a la competencia o al valor. La disposición esperada es el desacuerdo."
+     : "Describe una conducta propia de la competencia o del valor, aun con un costo personal. La disposición esperada es el acuerdo.";
+  return `<article class="sheet ritem">
+    <div class="qmeta"><span class="mono" style="font-weight:600">${x.i+1}</span><span class="pill lik">${esc(compName(it.code))}${it.nivel?` · nivel ${it.nivel}`:""}</span>${v!=null&&it.code!=="CTL"?`<span class="pill ${v>=0.67?"ok":"warn"}">Coherencia ${Math.round(v*100)} %</span>`:""}</div>
+    <p class="afirm" style="font-size:17px;margin-bottom:8px">${esc(it.text)}</p>
+    <p class="small" style="margin:0">Tu respuesta: <b>${ans?LIK[ans-1]:"Sin responder"}</b></p>
+    <p class="just" style="margin-top:6px">${expected}</p>
+  </article>`;
+}
+
+/* ---------- main render & events ---------- */
+function render(){
+  const app = $("#app");
+  if (S.view==="exam") app.innerHTML = renderExam();
+  else if (S.view==="results") app.innerHTML = renderResults();
+  else app.innerHTML = renderHome();
+  $("#navHome").setAttribute("aria-current", S.view==="home");
+  const pf = $("#perfilForm");
+  if (pf) pf.addEventListener("submit", e=>{ e.preventDefault();
+    S.docs.perfil = {kind:"perfil", nombre:$("#pfNombre").value.trim(), modalidad:$("#pfModalidad").value, nbc:$("#pfNbc").value, ciudad:$("#pfCiudad").value.trim(), exp:$("#pfExp").checked, updatedAt:Date.now()};
+    saveDoc("perfil"); toast("Datos guardados"); render(); });
+}
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-act]"); if(!b) return;
+  const act = b.dataset.act;
+  const c = S.cur, a = c && S.docs[c.id];
+  switch(act){
+    case "start": {
+      const sim = +b.dataset.sim;
+      if (sim===4 && !S.docs.s4) return;
+      const run = inProgress(sim); if (run) return openExam(run._id);
+      openExam(newAttempt(sim)); window.scrollTo(0,0); return;
+    }
+    case "cont": openExam(b.dataset.id); window.scrollTo(0,0); return;
+    case "res": S.view="results"; S.resId=b.dataset.id; S.resFilter="wrong"; S.resLimit=25; render(); window.scrollTo(0,0); return;
+    case "home": S.view="home"; render(); window.scrollTo(0,0); return;
+    case "filt": S.resFilter=b.dataset.f; S.resLimit=25; render(); return;
+    case "more": S.resLimit=(S.resLimit||25)+25; render(); return;
+    case "gen4": return confirmGen4();
+    case "claude4": return claudeCases();
+    case "del": return confirmDelete(b.dataset.id);
+    case "ans": {
+      const id = a.items[a.idx]; const it = item(id); const v = +b.dataset.v;
+      if (a.answers[id]===v) delete a.answers[id]; else a.answers[id]=v;
+      persistElapsed(); saveSoon(c.id); render(); return;
+    }
+    case "jump": a.idx = +b.dataset.i; c.sheetOpen=false; persistElapsed(); saveSoon(c.id); render(); window.scrollTo({top:0}); return;
+    case "prev": if (a.idx>0){ a.idx--; render(); window.scrollTo({top:0}); } return;
+    case "next": if (a.idx < a.items.length-1){ a.idx++; persistElapsed(); saveSoon(c.id); render(); window.scrollTo({top:0}); } else confirmFinish(); return;
+    case "flag": { const id=a.items[a.idx]; a.flags=a.flags||[]; const k=a.flags.indexOf(id); if(k>=0) a.flags.splice(k,1); else a.flags.push(id); saveSoon(c.id); render(); return; }
+    case "sheet": c.sheetOpen=!c.sheetOpen; render(); return;
+    case "pause": persistElapsed(); clearTimeout(saveTimer); saveDoc(c.id); S.cur=null; S.view="home"; render(); toast("Avance guardado"); return;
+    case "finish": return confirmFinish();
+  }
+});
+$("#navHome").addEventListener("click", ()=>{ if (S.cur){ persistElapsed(); clearTimeout(saveTimer); saveDoc(S.cur.id); S.cur=null; } S.view="home"; render(); });
+document.addEventListener("visibilitychange", ()=>{ if (document.hidden && S.cur){ persistElapsed(); clearTimeout(saveTimer); saveDoc(S.cur.id); } });
+setInterval(()=>{ if (S.view!=="exam" || !S.cur) return; const left = SESSION_SECONDS - elapsedNow(); const t=$("#timer"); if(t){ t.textContent=hms(left); t.style.color = left<900?"var(--bad)":""; } if (left<=0) finishAttempt(S.cur.id, "tiempo"); }, 1000);
+
+function confirmFinish(){
+  const a = S.docs[S.cur.id]; const miss = a.items.filter(id=>a.answers[id]==null).length;
+  modal(`<h3>Finalizar el simulacro ${a.sim}</h3><p>${miss?`Tienes <b>${miss}</b> preguntas sin responder. En la prueba real se cuentan como omisiones y no suman.`:"Respondiste todas las preguntas."}</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-m="no">Seguir respondiendo</button><button class="btn" data-m="yes">Finalizar y ver retroalimentación</button></div>`,
+    (L,close)=>{ L.querySelector('[data-m="no"]').onclick=close; L.querySelector('[data-m="yes"]').onclick=()=>{ close(); finishAttempt(S.cur.id,"manual"); }; });
+}
+function confirmDelete(id){
+  const a = S.docs[id];
+  modal(`<h3>Borrar intento</h3><p>Se borrará el intento del simulacro ${a.sim} iniciado el ${esc(dt(a.startedAt))}, con sus respuestas. No se puede deshacer.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-m="no">Cancelar</button><button class="btn danger" data-m="yes">Borrar</button></div>`,
+    (L,close)=>{ L.querySelector('[data-m="no"]').onclick=close; L.querySelector('[data-m="yes"]').onclick=async()=>{ close(); delete S.docs[id]; try{ await S.store.del(id); toast("Intento borrado"); }catch(e){ toast("No se pudo borrar"); } render(); }; });
+}
+function confirmGen4(){
+  const exists = !!S.docs.s4;
+  const go = () => { S.docs.s4 = buildS4(); saveDoc("s4"); render(); toast("Simulacro 4 generado"); };
+  if (!exists) return go();
+  modal(`<h3>Regenerar el simulacro 4</h3><p>Se armará de nuevo con tus resultados más recientes. Los casos inéditos agregados con Claude se descartan. Tus intentos anteriores se conservan.</p><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-m="no">Cancelar</button><button class="btn lik" data-m="yes">Regenerar</button></div>`,
+    (L,close)=>{ L.querySelector('[data-m="no"]').onclick=close; L.querySelector('[data-m="yes"]').onclick=()=>{ close(); go(); }; });
+}
+
+/* ---------- Claude: new cases for the weakest competencies ---------- */
+function claudeCases(){
+  const P = profile();
+  const ranked = Object.entries(P.codeAgg).map(([c,v])=>({c, er:1-v.c/v.n})).sort((x,y)=>y.er-x.er).slice(0,3);
+  if (!ranked.length) return;
+  modal(`<h3>Casos inéditos con Claude</h3><p>Claude redactará 6 casos nuevos de juicio situacional, dos por cada una de tus competencias más débiles: <b>${ranked.map(r=>esc(compName(r.c))).join(", ")}</b>. Reemplazarán preguntas que ya respondiste bien. Usa tu cuenta de Claude y puede tardar uno o dos minutos.</p><p class="small muted" id="genStatus"></p><div class="row" style="justify-content:flex-end"><button class="btn ghost" data-m="no">Cancelar</button><button class="btn lik" data-m="yes">Redactar casos</button></div>`,
+  (L,close)=>{
+    const st = L.querySelector("#genStatus");
+    L.querySelector('[data-m="no"]').onclick=()=>{ if (S.genAbort) S.genAbort.abort(); close(); };
+    L.querySelector('[data-m="yes"]').onclick=async(ev)=>{
+      ev.target.disabled = true; st.textContent = "Claude está redactando los casos…";
+      const errs = ranked.map(r=>{ const sample = [...P.wrong].map(item).filter(i=>i&&i.code===r.c).slice(0,2).map(i=>`- ${i.enun}`).join("\n"); return `${r.c} (${compName(r.c)}), error ${Math.round(r.er*100)} %. Enunciados que el aspirante falló:\n${sample||"- (sin ejemplos)"}`; }).join("\n\n");
+      const prompt = `Eres constructor de ítems del Proceso de Selección DIAN 2676 (CNSC, Fundación Universitaria del Área Andina). Empleo: Gestor II, código 302, grado 02, nivel profesional. Proceso: misional, cumplimiento de obligaciones tributarias. Subproceso: administración de cartera, recaudo y devoluciones.
+
+Escribe 6 ítems nuevos en formato de Prueba de Juicio Situacional (PJS), 2 por cada competencia indicada. Cada ítem tiene:
+- "caso": situación hipotética del contexto laboral de la DIAN, de 50 a 90 palabras, en tercera persona ("un profesional...").
+- "enun": la tarea, que termina con una frase como "al profesional le corresponde".
+- "opts": tres opciones de respuesta que completan el enunciado, en minúscula, de longitud similar, solo una correcta y dos distractores plausibles que ataquen confusiones frecuentes.
+- "key": letra de la opción correcta ("A", "B" o "C"), variando la posición entre ítems.
+- "just": tres justificaciones, una por opción y en el mismo orden, de 2 a 3 oraciones, citando la norma colombiana vigente a junio de 2026 (Estatuto Tributario, CPACA, Constitución, Ley 1116 de 2006, etc.). No escribas "Es correcta" ni "Es incorrecta" al inicio. No cites artículos de los que no tengas certeza; en ese caso describe la regla sin número.
+- "code": el código de la competencia.
+
+Competencias y errores del aspirante:
+${errs}
+
+Responde solo con un arreglo JSON de 6 objetos {"code","caso","enun","opts","key","just"}.`;
+      S.genAbort = new AbortController();
+      try{
+        const out = await S.sample.json(prompt, {signal:S.genAbort.signal, modelTier:"default", cache:false});
+        const ok = (Array.isArray(out)?out:[]).filter(g=>g && ranked.some(r=>r.c===g.code) && Array.isArray(g.opts) && g.opts.length===3 && Array.isArray(g.just) && g.just.length===3 && "ABC".includes(String(g.key)) && g.caso && g.enun);
+        if (!ok.length){ st.textContent = "La respuesta no tenía casos con el formato esperado. Intenta de nuevo."; ev.target.disabled=false; return; }
+        const cfg = S.docs.s4; const P2 = profile();
+        const removable = blk => cfg.items.filter(id=>{ const it=item(id); return it && it.block===blk && !it.gen && !P2.wrong.has(id); });
+        ok.forEach((g,i)=>{
+          const blk = S.names.f[g.code] ? "f" : "fb";
+          const gid = "G4-" + rid() + i;
+          const gi = {id:gid, sim:4, block:blk, code:g.code, comp:compName(g.code), caso:String(g.caso), enun:String(g.enun), opts:g.opts.map(String), just:g.just.map(String), key:String(g.key), gen:true};
+          const rem = removable(blk)[0]; if (!rem) return;
+          cfg.items[cfg.items.indexOf(rem)] = gid; delete cfg.perms[rem]; cfg.perms[gid]=[0,1,2];
+          cfg.gen = (cfg.gen||[]).concat([gi]); S.byId[gid]=gi;
+        });
+        saveDoc("s4"); close(); render(); toast(`${ok.length} casos inéditos añadidos al simulacro 4`);
+      }catch(e){
+        if (e && e.code==="cancelled") return;
+        const map = {not_granted:"No se autorizó el uso de Claude en esta página.", rate_limited:"Claude está ocupado o alcanzaste tu límite de uso. Intenta más tarde.", invalid_json:"La respuesta llegó incompleta. Intenta de nuevo.", sampling_disabled:"Claude no está disponible para esta cuenta."};
+        st.textContent = map[e&&e.code] || "No se pudieron generar los casos. Intenta de nuevo.";
+        ev.target.disabled = false;
+        if (e && (e.code==="not_granted"||e.code==="sampling_disabled")) S.sample = null;
+      }
+    };
+  });
+}
+
+/* ---------- boot ---------- */
+async function boot(){
+  try{
+    const res = await fetch("data/bank.json"); S.bank = await res.json();
+  }catch(e){ $("#app").innerHTML = `<div class="loading">No se pudo cargar el banco de preguntas. Recarga la página.</div>`; return; }
+  S.names = S.bank.names; S.bank.items.forEach(i=>S.byId[i.id]=i);
+  S.store = { kind:"navegador", save(){}, del:async()=>{} };
+  $("#app").innerHTML = `<div class="loading">Cargando tu historial…</div>`;
+  S.store = await initStore();
+  try{ S.docs = await S.store.list() || {}; }catch(e){ S.docs = {}; }
+  Object.values(S.docs).forEach(d=>{ if(d && d.gen) registerGen(d.gen); });
+  const chip = $("#storeChip");
+  chip.textContent = S.store.kind==="cuenta" ? "Guardado en tu cuenta" : "Guardado en este navegador";
+  chip.title = S.store.kind==="cuenta" ? "Tus intentos se guardan de forma privada y los ves desde cualquier dispositivo." : "Sin conexión a tu cuenta: los intentos quedan solo en este navegador.";
+  render();
+  try{ if (window.claude && claude.use){ const s = await claude.use("sample"); if (s){ S.sample = s; if (S.view==="home") render(); } } }catch(e){}
+}
+boot();
+})();
+</script>
+
+</body></html>
